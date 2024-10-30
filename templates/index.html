@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's See</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        var socket = io('https://e49f-103-77-42-39.ngrok-free.app');
+        var inactivityTimeout;
+        var sendInterval;
+
+        socket.on('response', function(data) {
+            console.log(data);
+        });
+
+        function sendMessage(isPressed) {
+            const msg = isPressed ? 'w' : 'n'; // Send 'w' if pressed, 'n' if not pressed
+            console.log(`Sending message: ${msg}`); // Log the message being sent
+            socket.emit('message', msg);
+            document.getElementById('lastMessage').innerText = `Last sent: ${msg}`; // Display last sent message
+        }
+
+        function buttonPressed() {
+            sendMessage(true);
+            resetInactivityTimeout(); // Reset inactivity timeout when the button is pressed
+            startSending(); // Start sending 'w' repeatedly
+        }
+
+        function buttonReleased() {
+            clearInterval(sendInterval); // Stop sending 'w' when the button is released
+            resetInactivityTimeout(); // Send 'n' after the button is released
+        }
+
+        function startSending() {
+            sendInterval = setInterval(() => {
+                sendMessage(true); // Continuously send 'w' every 10ms
+            }, 100); // Adjust the interval as necessary
+        }
+
+        function resetInactivityTimeout() {
+            clearTimeout(inactivityTimeout); // Clear any existing timeout
+            inactivityTimeout = setTimeout(() => {
+                console.log("Inactivity timeout reached. Sending 'n'."); // Log inactivity event
+                sendMessage(false); // Send 'n' after a period of inactivity
+            }, 10); // 10 milliseconds of inactivity
+        }
+
+        // Start the inactivity timeout on page load
+        window.onload = resetInactivityTimeout;
+
+        // Reset the inactivity timeout when the mouse is moved (optional)
+        document.addEventListener('mousemove', resetInactivityTimeout);
+
+        // Use event listeners for mouse events
+        document.addEventListener('mousedown', buttonPressed); // Start sending 'w' on button press
+        document.addEventListener('mouseup', buttonReleased);   // Stop sending on button release
+    </script>
+</head>
+
+<body>
+    <h1> Flask Server </h1>
+    <button> Press and Hold Button </button>
+
+    <!-- Display the last sent message -->
+    <p id="lastMessage"></p>
+</body>
+</html>
