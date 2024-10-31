@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Let's See</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
     <script>
-        var socket = io("https://4f62-103-77-42-39.ngrok-free.app");
+        var socket = io();
         var inactivityTimeout;
         var sendInterval;
     
@@ -59,19 +60,69 @@
             });
         };
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .topHead{
+            margin-left: 490px;
+            font-size: 39px;
+            color: azure;
+        }
+
+        .button-container {
+            margin-top: 500px;
+            color: blue;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Three columns for WASD layout */
+            grid-template-rows: repeat(3, 1fr); /* Three rows for WASD layout */
+            gap: 15px; /* Space between buttons */
+            width: 200px; /* Width for button layout */
+            margin: 30px auto; /* Center the container */
+        }
+
+        .button-container button {
+            font-size: 16px;
+            padding: 15px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color:blue;
+        }
+    </style>
     
 </head>
 
 <body>
-    <h1> Flask Server </h1>
-    <div id="Buttons">
-    <button id="Straight" data-value="w"> Straight </button>
-    <button id="left" data-value="a"> Left</button>
-    <button id="Right" data-value="d"> Right</button>
-    <button id="Reverse" data-value="s"> Reverse</button>
+    <div class = "topHead"><strong><i>Long Distance Communication </i></strong></div>
+    
+     
+    <div class="button-container">
+         
+        <div></div> <!-- Spacer for top alignment -->
+        <button id="Straight" data-value="w"><i>Straight</i></button> <!-- Top button -->
+        <div></div> <!-- Spacer for top alignment -->
+        <button id="left" data-value="a"><i>Left</i></button> <!-- Left button -->
+        <div></div> <!-- Spacer for top alignment -->
+        <button id="Right" data-value="d"><i>Right</i></button> <!-- Center button -->
+        <div></div> <!-- Spacer for top alignment -->
+        <button id="Reverse" data-value="s"><i>Reverse</i></button> <!-- Right button -->
+        <div></div> <!-- Spacer for bottom alignment -->
+        <div></div> <!-- Spacer for bottom alignment -->
+        <p id="lastMessage"></p>
     </div>
 
     <!-- Display the last sent message -->
-    <p id="lastMessage"></p>
+     
+    
 </body>
 </html>
