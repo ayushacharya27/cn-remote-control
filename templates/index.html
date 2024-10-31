@@ -6,66 +6,70 @@
     <title>Let's See</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
     <script>
-        var socket = io('https://e307-103-77-42-39.ngrok-free.app');
+        var socket = io("https://4f62-103-77-42-39.ngrok-free.app");
         var inactivityTimeout;
         var sendInterval;
-
+    
         socket.on('response', function(data) {
             console.log(data);
         });
-
-        function sendMessage(isPressed) {
-            const msg = isPressed ? 'w' : 'n'; // Send 'w' if pressed, 'n' if not pressed
+    
+        function sendMessage(msg) {
             console.log(`Sending message: ${msg}`); // Log the message being sent
             socket.emit('message', msg);
             document.getElementById('lastMessage').innerText = `Last sent: ${msg}`; // Display last sent message
         }
-
-        function buttonPressed() {
-            sendMessage(true);
+    
+        function buttonPressed(value) {
+            sendMessage(value); // Send the specific message based on button's data-value
             resetInactivityTimeout(); // Reset inactivity timeout when the button is pressed
-            startSending(); // Start sending 'w' repeatedly
+            startSending(value); // Start sending the button's value repeatedly
         }
-
+    
         function buttonReleased() {
-            clearInterval(sendInterval); // Stop sending 'w' when the button is released
+            clearInterval(sendInterval); // Stop sending messages when the button is released
             resetInactivityTimeout(); // Send 'n' after the button is released
         }
-
-        function startSending() {
+    
+        function startSending(value) {
             sendInterval = setInterval(() => {
-                sendMessage(true); // Continuously send 'w' every 10ms
+                sendMessage(value); // Continuously send the specific button value every 100ms
             }, 100); // Adjust the interval as necessary
         }
-
+    
         function resetInactivityTimeout() {
             clearTimeout(inactivityTimeout); // Clear any existing timeout
             inactivityTimeout = setTimeout(() => {
                 console.log("Inactivity timeout reached. Sending 'n'."); // Log inactivity event
-                sendMessage(false); // Send 'n' after a period of inactivity
+                sendMessage('n'); // Send 'n' after a period of inactivity
             }, 10); // 10 milliseconds of inactivity
         }
-
-        // Start the inactivity timeout on page load
-        window.onload = resetInactivityTimeout;
-
-        // Reset the inactivity timeout when the mouse is moved (optional)
-        document.addEventListener('mousemove', resetInactivityTimeout);
-
-        // Use event listeners for mouse events
-        document.addEventListener('mousedown', buttonPressed); // Desktop
-        document.addEventListener('touchstart', buttonPressed); // Mobile
-
-        
-        document.addEventListener('mouseup', buttonReleased); // Desktop
-        document.addEventListener('touchend', buttonReleased); // Mobile
-
+    
+        window.onload = function() {
+            resetInactivityTimeout();
+    
+            // Select all buttons and add event listeners for each
+            const buttons = document.querySelectorAll('button[data-value]');
+            buttons.forEach(button => {
+                const value = button.getAttribute('data-value');
+                button.addEventListener('mousedown', () => buttonPressed(value)); // Desktop
+                button.addEventListener('mouseup', buttonReleased); // Desktop
+                button.addEventListener('touchstart', () => buttonPressed(value)); // Mobile
+                button.addEventListener('touchend', buttonReleased); // Mobile
+            });
+        };
     </script>
+    
 </head>
 
 <body>
     <h1> Flask Server </h1>
-    <button> Press and Hold Button </button>
+    <div id="Buttons">
+    <button id="Straight" data-value="w"> Straight </button>
+    <button id="left" data-value="a"> Left</button>
+    <button id="Right" data-value="d"> Right</button>
+    <button id="Reverse" data-value="s"> Reverse</button>
+    </div>
 
     <!-- Display the last sent message -->
     <p id="lastMessage"></p>
