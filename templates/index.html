@@ -6,7 +6,7 @@
     <title>Let's See</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
     <script>
-        var socket = io('https://e49f-103-77-42-39.ngrok-free.app');
+        var socket = io('https://e307-103-77-42-39.ngrok-free.app');
         var inactivityTimeout;
         var sendInterval;
 
@@ -53,8 +53,13 @@
         document.addEventListener('mousemove', resetInactivityTimeout);
 
         // Use event listeners for mouse events
-        document.addEventListener('mousedown', buttonPressed); // Start sending 'w' on button press
-        document.addEventListener('mouseup', buttonReleased);   // Stop sending on button release
+        document.addEventListener('mousedown', buttonPressed); // Desktop
+        document.addEventListener('touchstart', buttonPressed); // Mobile
+
+        
+        document.addEventListener('mouseup', buttonReleased); // Desktop
+        document.addEventListener('touchend', buttonReleased); // Mobile
+
     </script>
 </head>
 
